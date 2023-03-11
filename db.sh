@@ -165,7 +165,7 @@ do
 					 read CONF
 					 if [ "${CONF}" == "y" ]
 					 then
-						   echo -n "Enter customer email : "
+						   echo -n "Enter customer new email : "
                                         	   read CUSTEMAIL
                                          	   checkEmail ${CUSTEMAIL}
                                         	   if [ ${?} -ne 0 ]
@@ -260,4 +260,5 @@ done
 
 
 exit 0
+
                                            
