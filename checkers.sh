@@ -37,7 +37,7 @@ function authUser {
 	[ -z ${USERLINE} ] && return 0
 	PASSHASH=$(echo ${USERLINE} | awk ' BEGIN { FS=":" } { print $3} ')
 	SALTKEY=$(echo ${PASSHASH} | awk ' BEGIN { FS="$" } { print $3 } ')
-	NEWHASH=$(openssl passwd -salt ${SALTKEY} -6 ${USEPASS})
+	NEWHASH=$(openssl passwd -salt ${SALTKEY} -6 ${USERPASS})
 	if [ "${PASSHASH}" == "${NEWHASH}" ]
 	then
 		USERID=$(echo ${USERLINE} | awk ' BEGIN { FS=":" } { print $1} ')
@@ -89,37 +89,29 @@ function checkEmail {
 
 
 
-#function to check user id existance
+#function to check user id existance, return 1 if exist and 0 if doesn't exist
 function checkUserExit {
-    ID=${1}
-
-    while read FLINE
-    do
-	    col1=$(echo ${FLINE} | awk 'BEGIN { FS=":" } { print $1 }')
+    	  ID=${1}
+    	  FLINE=$(grep "^${ID}:" customers.db)
+	  echo ${FLINE}
+	  col1=$(echo ${FLINE} | awk 'BEGIN {FS=":"} {print $1}')
 	    if [ ${col1} -eq ${ID} ]
 	    then 
-		    return 1
+		    return 1 
 	    else
 		    return 0
 	    fi
-    done < customers.db
 }
 
 
 
-#function to check email existance
+#function to check email existance, returns 1 if exist and 0 otherwise
 function checkEmailExit {
-    EMAIL=${1}
-
-    while read FLINE
-    do
-            col3=$(echo ${FLINE} | awk 'BEGIN { FS=":" } { print $3 }')
-            if [ ${col3} == ${EMAIL} ]
-            then
-                    return 1
-            else
-                    return 0
-            fi
-    done < customers.db
+	    EMAIL=${1}
+  	    FLINE=$(grep ":${EMAIL}$" customers.db )
+            [ -z ${FLINE} ] && return 0
+	    return 1
 }
+
+
 
